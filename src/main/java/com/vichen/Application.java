@@ -10,7 +10,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  * @author chenyu
  * @date 2021/2/22
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = {DruidDataSourceAutoConfigure.class,
+  DataSourceAutoConfiguration.class})
 public class Application {
 
   public static void main(String[] args) {

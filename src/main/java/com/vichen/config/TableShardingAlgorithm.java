@@ -21,6 +21,8 @@ public class TableShardingAlgorithm implements PreciseShardingAlgorithm<Date> {
     int season = DateUtils.getSeason(date);
     tbName = tbName + year + "_Q" + season;
 
+    collection.add("test");
+
     return tbName;
   }
 
