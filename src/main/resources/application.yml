@@ -1,0 +1,83 @@
+server:
+  port: 8050
+spring:
+  shardingsphere:
+    props:
+      sql:
+        show: true
+    datasource:
+      names: ds0,ds1,ds2021q1,ds2021q2,ds2021q3,ds2021q4
+      ds0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://10.10.100.37:3306/sharding_jdbc_test?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+        username: root
+        password: iptvadmin
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://10.10.100.37:3306/sharding_jdbc_test_2?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+        username: root
+        password: iptvadmin
+      ds2021q1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://10.10.100.37:3306/sharding_jdbc_test_2021_Q1?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+        username: root
+        password: iptvadmin
+      ds2021q2:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://10.10.100.37:3306/sharding_jdbc_test_2021_Q2?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+        username: root
+        password: iptvadmin
+      ds2021q3:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://10.10.100.37:3306/sharding_jdbc_test_2021_Q3?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+        username: root
+        password: iptvadmin
+      ds2021q4:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://10.10.100.37:3306/sharding_jdbc_test_2021_Q4?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8
+        username: root
+        password: iptvadmin
+    sharding:
+      tables:
+        v_user:
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+          actual-data-nodes: ds0.v_user,ds1.v_user
+          database-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: ds$->{id % 2}
+        v_order:
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+          actual-data-nodes: ds0.v_order$->{0..1}
+          table-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: v_order$->{id % 2}
+        v_point:
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+          actual-data-nodes: ds0.v_point_2021_Q1,ds0.v_point_2021_Q2,ds0.v_point_2021_Q3,ds0.v_point_2021_Q4
+          table-strategy:
+            standard:
+              precise-algorithm-class-name: com.vichen.config.TableShardingAlgorithm
+              sharding-column: create_time
+        v_record:
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+          actual-data-nodes: ds2021q1.v_record,ds2021q2.v_record,ds2021q3.v_record,ds2021q4.v_record
+          database-strategy:
+            standard:
+              precise-algorithm-class-name: com.vichen.config.DatabaseShardingAlgorithm
+              sharding-column: create_time
